@@ -2,7 +2,7 @@ from collections import defaultdict
 import json
 from tqdm import tqdm
 
-def generate_probability_set(file_path, output_path, ngram_size=2, write_frequency=10000):
+def generate_probability_set(file_path, output_path, ngram_size=3, write_frequency=10000): # 修改 ngram size to 3
     transition_counts = defaultdict(lambda: defaultdict(int))
 
     with open(file_path, 'r', encoding='utf-8') as file:
@@ -25,8 +25,8 @@ def generate_probability_set(file_path, output_path, ngram_size=2, write_frequen
 
 def update_probabilities(transition_counts, probabilities):
     for current_ngram, transitions in transition_counts.items():
-        total = sum(transitions.values())
-        probabilities[current_ngram] = {char: count / total for char, count in transitions.items()}
+        total = sum(transitions.values()) + len(transitions)  # 加入拉普拉斯平滑
+        probabilities[current_ngram] = {char: (count + 1) / total for char, count in transitions.items()}
 
 def write_probabilities(output_path, probabilities):
     with open(output_path, 'w', encoding='utf-8') as file:

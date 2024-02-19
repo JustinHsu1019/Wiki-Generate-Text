@@ -1,5 +1,4 @@
-import os
-import codecs
+import os, codecs
 from tqdm import tqdm
 from opencc import OpenCC
 

@@ -1,11 +1,14 @@
 import tkinter as tk
 import tkinter.font as tkFont
-import json
-import random
+import re, json, random
 
 def load_probabilities(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         return json.load(file)
+
+def post_process_text(text):
+    cleaned_text = re.sub(r'\b(\w+)\s+\1\b', r'\1', text)  # 去除重複連續的詞語
+    return cleaned_text
 
 def generate_text(start_ngram, length, probabilities):
     result = [start_ngram]
@@ -32,6 +35,7 @@ def create_gui(probabilities):
     def on_generate():
         start_ngram = entry.get()
         generated_text = generate_text(start_ngram, 500, probabilities)
+        generated_text = post_process_text(generated_text) # 新增後處理步驟
         text_display.delete("1.0", tk.END)
         text_display.insert(tk.END, generated_text)
 
